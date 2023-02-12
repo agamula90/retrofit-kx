@@ -1,6 +1,40 @@
 plugins {
     id ("org.jetbrains.kotlin.jvm")
     id ("com.google.devtools.ksp")
+    id ("maven-publish")
+}
+
+group = "com.github.agamula90"
+
+publishing {
+    publications.withType<MavenPublication> {
+        artifact("libs/retrofit-kx.jar")
+        artifactId = "retrofitx"
+
+        // Provide artifacts information required by Maven Central
+        pom {
+            name.set("Retrofit-kx")
+            description.set("test retrofit-kx")
+            url.set("https://github.com/agamula90/RetrofitKx")
+
+            licenses {
+                license {
+                    name.set("Apache-2.0")
+                    url.set("https://www.apache.org/licenses/LICENSE-2.0")
+                }
+            }
+            developers {
+                developer {
+                    id.set("https://github.com/agamula90")
+                    name.set("Andrii Hamula")
+                    email.set("andriihamula@gmail.com")
+                }
+            }
+            scm {
+                url.set("https://github.com/agamula90/RetrofitKx")
+            }
+        }
+    }
 }
 
 dependencies {
