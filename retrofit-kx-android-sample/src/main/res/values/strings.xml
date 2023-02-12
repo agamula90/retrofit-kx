@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">RetrofitKx</string>
+    <string name="base_url">Base url</string>
+    <string name="apply_base_url">Apply</string>
+    <string name="product_name">Product name</string>
+    <string name="product_price">Product price</string>
+    <string name="shop_name">Shop name</string>
+    <string name="shop_id">Shop id</string>
+    <string name="base_url_successfully_changed">Base url successfully changed</string>
+    <string name="shops">Shops</string>
+    <string name="products">Products</string>
+    <string name="settings">Settings</string>
+    <string name="shop_selected">Shop %1$d selected</string>
+    <string name="reload">Reload</string>
+    <string name="parse_failed_message">Oops, parsing failed…\n It looks, like response has incorrect format.\n It could be that backend not initialised yet, like glitch backend, that returns plain text before server fully initialised.\n Or format of expected response doesn\'t match to what is returned by backend.\n Or format of api error response doesn\'t match to what is returned by backend.</string>
+    <string name="delete">Delete</string>
+    <string name="connection_error">Oops, connection error…\n Try to fix connection issues and reload the page</string>
+    <string name="api_error">Oops, api error occurred: \"%1$s\".\n Reach backend team with details to fix it</string>
+    <string name="confirm_title">Please confirm your action</string>
+    <string name="product_deletion_message">Are you sure you want to delete product \"%1$s\"?</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="static_base_url_text">Static base url: %1$s</string>
+    <string name="dynamic_base_url_text">Dynamic base url: %1$s</string>
+    <string name="default_base_urls">Mixed urls: https://statuesque-valuable-avenue.glitch.me/, https://vast-berry-paranthodon.glitch.me/</string>
+    <string name="remote_error_adjusted">IdError url: https://viridian-charmed-curtain.glitch.me/</string>
+</resources>
