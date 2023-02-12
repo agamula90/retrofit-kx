@@ -12,7 +12,6 @@ group = "com.github.agamula90"
 publishing {
     publications.withType<MavenPublication> {
         artifact("libs/retrofit-kx-ksp.jar")
-        artifactId = "retrofitx"
 
         // Provide artifacts information required by Maven Central
         pom {
