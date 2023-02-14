@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace = "com.github.retrofitx.android"
+    namespace = "io.github.retrofitx.android"
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "com.github.retrofitx.android"
+        applicationId = "io.github.retrofitx.android"
         minSdk = 21
         targetSdk = 33
         versionCode = 1
@@ -41,7 +41,7 @@ android {
 }
 
 ksp {
-    arg("servicesPackage", "com.github.retrofitx.android.remote")
+    arg("servicesPackage", "io.github.retrofitx.android.remote")
 }
 
 dependencies {
@@ -56,8 +56,8 @@ dependencies {
     implementation ("com.google.dagger:hilt-android:2.44")
     kapt ("com.google.dagger:hilt-compiler:2.44")
 
-    ksp (project(":retrofit-kx-ksp"))
-    implementation (project(":retrofit-kx"))
+    implementation ("io.github.agamula90:retrofit-kx:0.0.1")
+    ksp ("io.github.agamula90:retrofit-kx-ksp:0.0.1")
 
     debugImplementation ("com.github.YarikSOffice.Venom:venom:0.5.0")
     releaseImplementation ("com.github.YarikSOffice.Venom:venom-no-op:0.5.0")

@@ -5,7 +5,7 @@
     android:id="@+id/main_graph">
 
     <fragment android:id="@+id/shops"
-        android:name="com.github.retrofitx.android.shops.ShopsFragment"
+        android:name="io.github.retrofitx.android.shops.ShopsFragment"
         tools:layout="@layout/shops">
         <action
             android:id="@+id/goShopDetails"
@@ -13,11 +13,11 @@
     </fragment>
 
     <fragment android:id="@+id/shopDetails"
-        android:name="com.github.retrofitx.android.shops.details.ShopDetailsFragment"
+        android:name="io.github.retrofitx.android.shops.details.ShopDetailsFragment"
         tools:layout="@layout/layout_shop_details" />
 
     <fragment android:id="@+id/products"
-        android:name="com.github.retrofitx.android.products.ProductsFragment"
+        android:name="io.github.retrofitx.android.products.ProductsFragment"
         tools:layout="@layout/products">
         <action
             android:id="@+id/goProductDetails"
@@ -25,11 +25,11 @@
     </fragment>
 
     <fragment android:id="@+id/productDetails"
-        android:name="com.github.retrofitx.android.products.details.ProductDetailsFragment"
+        android:name="io.github.retrofitx.android.products.details.ProductDetailsFragment"
         tools:layout="@layout/layout_product_details" />
 
     <fragment android:id="@+id/settings"
-        android:name="com.github.retrofitx.android.settings.SettingsFragment"
+        android:name="io.github.retrofitx.android.settings.SettingsFragment"
         tools:layout="@layout/settings" />
 
 </navigation>

@@ -8,10 +8,10 @@ sourceSets.getByName("main") {
 }
 
 ksp {
-    arg("servicesPackage", "com.github.retrofitx.kotlin.remote")
+    arg("servicesPackage", "io.github.retrofitx.kotlin.remote")
 }
 
 dependencies {
-    ksp (project(":retrofit-kx-ksp"))
-    implementation (project(":retrofit-kx"))
+    ksp ("io.github.agamula90:retrofit-kx-ksp:0.0.2")
+    implementation ("io.github.agamula90:retrofit-kx:0.0.1")
 }
