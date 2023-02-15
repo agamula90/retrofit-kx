@@ -5,6 +5,7 @@ plugins {
     id ("com.google.dagger.hilt.android")
     id ("kotlin-kapt")
     id ("kotlin-parcelize")
+    id ("retrofitx.publish")
 }
 
 android {
@@ -56,8 +57,8 @@ dependencies {
     implementation ("com.google.dagger:hilt-android:2.44")
     kapt ("com.google.dagger:hilt-compiler:2.44")
 
-    implementation ("io.github.agamula90:retrofit-kx:0.0.1")
-    ksp ("io.github.agamula90:retrofit-kx-ksp:0.0.1")
+    implementation ("io.github.agamula90:retrofit-kx:${publishEnvironment.releaseVersion}")
+    ksp ("io.github.agamula90:retrofit-kx-ksp:${publishEnvironment.releaseVersion}")
 
     debugImplementation ("com.github.YarikSOffice.Venom:venom:0.5.0")
     releaseImplementation ("com.github.YarikSOffice.Venom:venom-no-op:0.5.0")

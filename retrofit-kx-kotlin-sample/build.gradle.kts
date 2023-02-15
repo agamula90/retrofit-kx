@@ -1,6 +1,7 @@
 plugins {
     id ("org.jetbrains.kotlin.jvm")
     id ("com.google.devtools.ksp")
+    id ("retrofitx.publish")
 }
 
 sourceSets.getByName("main") {
@@ -12,6 +13,6 @@ ksp {
 }
 
 dependencies {
-    ksp ("io.github.agamula90:retrofit-kx-ksp:0.0.2")
-    implementation ("io.github.agamula90:retrofit-kx:0.0.1")
+    implementation ("io.github.agamula90:retrofit-kx:${publishEnvironment.releaseVersion}")
+    ksp ("io.github.agamula90:retrofit-kx-ksp:${publishEnvironment.releaseVersion}")
 }

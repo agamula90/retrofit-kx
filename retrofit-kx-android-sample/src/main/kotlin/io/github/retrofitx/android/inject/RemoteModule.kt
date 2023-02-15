@@ -1,6 +1,5 @@
-package io.github.retrofitx.android.di
+package io.github.retrofitx.android.inject
 
-import android.content.Context
 import io.github.retrofitx.ProductService
 import io.github.retrofitx.RetrofitX
 import io.github.retrofitx.ShopService
@@ -9,7 +8,6 @@ import io.github.retrofitx.android.simple.DataStoreManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -20,12 +18,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 @Module
 @InstallIn(SingletonComponent::class)
 object RemoteModule {
-
-    @Singleton
-    @Provides
-    fun provideDataStoreManager(@ApplicationContext context: Context): DataStoreManager {
-        return DataStoreManager(context)
-    }
 
     @Singleton
     @Provides
