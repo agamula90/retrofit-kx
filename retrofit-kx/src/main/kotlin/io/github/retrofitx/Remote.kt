@@ -18,9 +18,7 @@ package io.github.retrofitx
 import kotlin.reflect.KClass
 
 /**
- * Retrofit doesn't allow to override base url, so retrofit-kx introduce this annotation to fix this behavior.
- *
- * You can use this annotation to override baseurl per service, like this:
+ * Use this annotation to override base url per service:
  * ```
  * @Remote(url = "https://google.com/")
  * interface ProductService {
@@ -30,11 +28,12 @@ import kotlin.reflect.KClass
  * }
  * ```
  *
- * For such declaration get products will use "https://google.com/products" url with getProducts function no matter which base url was set on RetrofitX.
+ * For such declaration getProducts will use "https://google.com/products" regardless of RetrofitX base url.
  *
- * You can override error class per remote if error for such remote has other format, than default RetrofitX error.
+ * You can override error class per service with error parameter:
  *
  * ```
+ * @JsonClass(generateAdapter = true)
  * class GoogleError(val errorId: Int)
  *
  * @Remote(url = "https://google.com/", error = GoogleError::class)
@@ -45,7 +44,7 @@ import kotlin.reflect.KClass
  * }
  * ```
  *
- * See [RetrofitError] on how to specify default RetrofitX error
+ * See [RetrofitError] how to specify default error class
  */
 @MustBeDocumented
 @Target(AnnotationTarget.CLASS)

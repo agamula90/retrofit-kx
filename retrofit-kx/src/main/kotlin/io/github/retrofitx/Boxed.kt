@@ -22,7 +22,7 @@ package io.github.retrofitx
  *
  * {"products": `[`{"id": 123, "name": "Product1"}, {"id": 124, "name": "Product2"}`]`}
  *
- * with retrofit you'll need 2 classes
+ * with retrofit you'll need 2 classes:
  *
  * ```
  * class Product(val id: Int, val name: String)
@@ -33,7 +33,7 @@ package io.github.retrofitx
  * @POST("products")
  * suspend fun getProducts(): ProductsWrapper
  * ```
- * To get rid of ProductsWrapper class just set [Boxed] annotation on getProducts function:
+ * To get rid of ProductsWrapper use [Boxed] annotation with getProducts function:
  * ```
  * @POST("products")
  * @Boxed
@@ -43,8 +43,8 @@ package io.github.retrofitx
  * Boxing precedence:
  *
  * - You can create RetrofitX with boxedByDefault = true to mark all services boxed
- * - You can override RetrofitX boxing by setting [Boxed] annotation on specific service declaration
- * - You can override service boxing by setting [Boxed] annotation on specific function declaration
+ * - You can override RetrofitX boxing with [Boxed] annotation set on specific service
+ * - You can override service boxing with [Boxed] annotation set on specific function
  *
  * Use [NotBoxed] if you want to exclude service / function from boxed pattern.
  *

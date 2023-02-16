@@ -33,7 +33,7 @@ android {
     }
 
     sourceSets.getByName("main") {
-        kotlin.srcDir("build/generated/ksp/debug/kotlin")
+        kotlin.srcDir("build/generated/ksp")
     }
 
     buildFeatures {

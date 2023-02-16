@@ -5,7 +5,7 @@ plugins {
 }
 
 sourceSets.getByName("main") {
-    kotlin.srcDir("build/generated/ksp/main/kotlin")
+    kotlin.srcDir("build/generated/ksp")
 }
 
 ksp {

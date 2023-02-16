@@ -1,6 +1,6 @@
 Retrofit-kx configured for sonatype hosting, and so some minimal local setup should be done for security purpose  
 
-## Local properties setup:
+### Local properties setup:
 
 - username: Sonatype user id
 - password: Sonatype user password
@@ -8,11 +8,11 @@ Retrofit-kx configured for sonatype hosting, and so some minimal local setup sho
 - publishSecret: gpg secret, retrieved from [Publish secret generation](#publish-secret-generation) section 
 - publishPassword: gpg password, used to sign artifacts
 
-## Publish key id generation
+#### Publish key id generation
 
 Last 8 symbols from `pub` section, when executing `gpg --fingerprint` command
 
-## Publish secret generation
+#### Publish secret generation
 
 - gpgUserId: gpg user id
 - pubRingPath: path to pubring.kbx file
@@ -46,6 +46,5 @@ To test local deployment:
 
 ### Remote deployment
 
-To deploy artifacts to remote repository use `publishAllPublicationsToMavenCentralRepository()` tasks for `retrofit-kx` / `retrofit-kx-ksp` 
-
+To deploy artifacts to remote repository use `publishAllPublicationsToMavenCentralRepository()` tasks for `retrofit-kx` / `retrofit-kx-ksp`  
 In case new changes from remote repository not picking up, use `Refresh gradle dependencies` option (right click on root project in gradle section)

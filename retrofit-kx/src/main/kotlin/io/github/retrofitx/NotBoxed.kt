@@ -19,9 +19,9 @@ package io.github.retrofitx
  *
  * This annotation used to override boxing behaviour per service / function
  *
- * For example if RetrofitX created with boxedByDefault = true, all services, created with this instance will be boxed.
+ * For example if RetrofitX created with boxedByDefault = true, all services created with this RetrofitX will be boxed.
  *
- * To exclude ProductService from boxing pattern, set [NotBoxed] annotation on it
+ * To exclude ProductService from boxing pattern use [NotBoxed] annotation with it
  * ```
  * @NotBoxed
  * interface ProductService {
@@ -31,8 +31,10 @@ package io.github.retrofitx
  * }
  * ```
  *
+ * It can be used with getProducts function instead of service if it's the only one that stand out from boxing pattern
+ *
  * See [Boxed] doc for:
- * - introduction of boxing term.
+ * - introduction of boxing term
  * - boxing precedence
  *
  * @see Boxed

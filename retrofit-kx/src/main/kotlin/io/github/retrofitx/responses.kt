@@ -18,7 +18,7 @@ package io.github.retrofitx
 import java.io.IOException
 
 /**
- * This exception will be thrown when success response parsing failed or api error parsing failed
+ * This exception will be thrown when response body parsing failed either for success response or error response
  *
  * @see [DataResponse]
  * @see [UnitResponse]
@@ -26,8 +26,8 @@ import java.io.IOException
 class ParseFailureException(isApiErrorParsingFailure: Boolean) : RuntimeException("[isApiErrorParsingFailure:$isApiErrorParsingFailure]")
 
 /**
- * This class is wrapper around json response with data.
- * - Success contains parsed response value if request succeeded
+ * This class represent result of http function invocation that has body.
+ * - Success contains parsed response body, will be used if request succeeded
  * - ConnectionError contains [IOException] that caused request to fail
  * - ApiError contains instance of error object that caused request to fail
  */
@@ -38,8 +38,8 @@ sealed class DataResponse<out T, out E> {
 }
 
 /**
- * This class is wrapper around json response with no data.
- * - Success - used when request execution succeeded
+ * This class represent result of http function invocation that has no body.
+ * - Success used if request succeeded
  * - ConnectionError contains [IOException] that caused request to fail
  * - ApiError contains instance of error object that caused request to fail
  */

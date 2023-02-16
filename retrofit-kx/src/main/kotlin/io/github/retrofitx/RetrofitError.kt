@@ -22,12 +22,10 @@ package io.github.retrofitx
  *
  * Like this:
  * ```
- * @RetrofitError
  * @JsonClass(generateAdapter = true)
+ * @RetrofitError
  * class MyBackendError(val errorId: Int)
  * ```
- *
- * It's 1 of 2 required inputs for retrofit-kx compilation (2nd is servicesPackage ksp arg - which defines where retrofit services located)
  *
  * One and only one class can be annotated with [RetrofitError] annotation, and based on it retrofit-kx generates RetrofitX services
  * that user can use to work with structured responses, like [DataResponse] or [UnitResponse].
