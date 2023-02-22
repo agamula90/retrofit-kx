@@ -33,7 +33,9 @@ android {
     }
 
     sourceSets.getByName("main") {
-        kotlin.srcDir("build/generated/ksp")
+        buildTypes.names.forEach { buildType ->
+            kotlin.srcDir("build/generated/ksp/$buildType/kotlin")
+        }
     }
 
     buildFeatures {

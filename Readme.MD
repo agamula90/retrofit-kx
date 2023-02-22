@@ -12,11 +12,12 @@ Though its usages by kotlin users can be improved by:
 Retrofit-kx is based on ksp, so it should be applied first:
 - in top level build.gradle `id ("com.google.devtools.ksp") version "1.7.20-1.0.7" apply false`
 - in project build.gradle - `id ("com.google.devtools.ksp")` in plugins section
-- include generated files in project build.gradle:
+- find root kotlin directory in build/generated subdirectories - `kotlinPath` (examples can be found in `retrofit-kx-android-sample` / `retrofit-kx-kotlin-sample`)
+- add kotlin directory to sources:
 
 ```
 sourceSets.getByName("main") {
-    kotlin.srcDir("build/generated/ksp")
+    kotlin.srcDir("$kotlinPath")
 }
 ```
 
@@ -153,7 +154,7 @@ There are certain features / fixes, that are not supported yet, but are planned 
 - add support for functions with `retrofit2.Response` wrappers
 - check subpackages for `RetrofitX` services generation
 - generate obfuscation rules for android users
-- more dynamic generation pattern based on user changes (grade plugins, [file watcher](#https://www.jetbrains.com/help/idea/using-file-watchers.html))
+- more dynamic generation pattern based on user changes (grade plugins, [file watcher](https://www.jetbrains.com/help/idea/using-file-watchers.html))
   
     This one :arrow_up: looks most interesting but it requires lot of investigation to be done  
 
