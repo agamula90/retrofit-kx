@@ -25,8 +25,8 @@ import retrofit2.HttpException
 import java.io.EOFException
 import java.io.IOException
 
-inline fun <T, E> invokeDataFunction(
-    retrofitFunction: () -> T,
+suspend fun <T, E> invokeDataFunction(
+    retrofitFunction: suspend () -> T,
     errorAdapter: JsonAdapter<E>
 ): DataResponse<T, E> = try {
     DataResponse.Success(retrofitFunction())
@@ -61,8 +61,8 @@ catch (e: IOException) {
     DataResponse.ConnectionError(e)
 }
 
-inline fun <E> invokeUnitFunction(
-    retrofitFunction: () -> Unit,
+suspend fun <E> invokeUnitFunction(
+    retrofitFunction: suspend () -> Unit,
     errorAdapter: JsonAdapter<E>
 ): UnitResponse<E> = try {
     retrofitFunction()
@@ -83,9 +83,6 @@ catch (e: HttpException) {
     }
 }
 catch (e: IllegalArgumentException) {
-    throw ParseFailureException(isApiErrorParsingFailure = false)
-}
-catch (e: EOFException) {
     throw ParseFailureException(isApiErrorParsingFailure = false)
 }
 catch (e: IOException) {

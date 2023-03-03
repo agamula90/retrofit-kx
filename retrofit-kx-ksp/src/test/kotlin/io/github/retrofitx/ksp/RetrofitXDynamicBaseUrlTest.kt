@@ -25,11 +25,13 @@ import kotlin.reflect.full.callSuspend
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.functions
 import kotlin.reflect.full.valueParameters
+import kotlin.reflect.jvm.isAccessible
 import kotlin.reflect.jvm.jvmErasure
 
 class RetrofitXDynamicBaseUrlTest: RetrofitXInstanceTest() {
 
-    @get:Rule val testCoroutineScope = TestCoroutineScope()
+    @get:Rule val consumeBaseUrlScope = TestCoroutineScope()
+    @get:Rule val testServiceCacheResetScope = TestCoroutineScope()
     @get:Rule val oldServer = MockWebServer()
     @get:Rule val newServer = MockWebServer()
 
@@ -48,7 +50,7 @@ class RetrofitXDynamicBaseUrlTest: RetrofitXInstanceTest() {
                 delay(BASE_URL_CHANGE_DELAY.toLong())
                 emit(newServer.url("/").toString())
             },
-            testCoroutineScope,
+            consumeBaseUrlScope,
             callFactory,
             Moshi.Builder().build(),
             boxed
@@ -65,16 +67,18 @@ class RetrofitXDynamicBaseUrlTest: RetrofitXInstanceTest() {
 
         val compilationResult = whenCompiled(services = listOf(serviceToTest))
 
-        testCoroutineScope.launch(Dispatchers.IO) {
-            delay(WAIT_BASE_URL_INITIALISED_MILLIS)
-            val servicesCache = compilationResult.getServiceCache(dispatcher)
-            servicesCache.thenCacheIsFilledAfterFirstServiceInvocation(
-                compilationResult = compilationResult,
-                dispatcher = dispatcher,
-                serviceName = serviceToTest.getServiceName()
-            )
-            delay(TimeUnit.SECONDS.toMillis(BASE_URL_CHANGE_DELAY.toLong()))
-            compilationResult.getServiceCache(dispatcher).thenCacheIsChanged(servicesCache)
+        runBlocking {
+            testServiceCacheResetScope.launch(Dispatchers.IO) {
+                delay(WAIT_BASE_URL_INITIALISED_MILLIS)
+                val servicesCache = compilationResult.getServiceCache(dispatcher)
+                servicesCache.thenCacheIsFilledAfterFirstServiceInvocation(
+                    compilationResult = compilationResult,
+                    dispatcher = dispatcher,
+                    serviceName = serviceToTest.getServiceName()
+                )
+                delay(TimeUnit.SECONDS.toMillis(BASE_URL_CHANGE_DELAY.toLong()))
+                compilationResult.getServiceCache(dispatcher).thenCacheIsChanged(servicesCache)
+            }.join()
         }
     }
 
@@ -105,6 +109,7 @@ class RetrofitXDynamicBaseUrlTest: RetrofitXInstanceTest() {
     private fun KotlinCompilation.Result.getServiceCache(dispatcher: Dispatcher): ServicesCache {
         val retrofitX = getRetrofitXClass().newRetrofitX(callFactory = dispatcher.toCallFactory())
         val servicesCacheProperty = retrofitX.javaClass.kotlin.declaredMemberProperties.first { it.name == "servicesCache" }
+        servicesCacheProperty.isAccessible = true
         return servicesCacheProperty.call(retrofitX)!! as ServicesCache
     }
 

@@ -26,6 +26,7 @@ gpg --export-secret-keys --armor $gpgUserId $pubRingPath | grep -v '\-\-' | grep
 In case api changed (`retrofit-kx` module or `retrofit-kx-ksp` module) we need to:
 - change isReleaseReady to false - `buildSrc/../retrofitx.publish.PublishPlugin -> publishEnvironment.isReleaseReady`
 - add test cases for new changes
+- perform mutation testing - run `:retrofit-kx-ksp:verification:pitest` gradle task + fix test / code, based on results
 - bump api version - `buildSrc/../retrofitx.publish.PublishPlugin -> publishEnvironment.baseVersion`
 - test [local deployment](#local-deployment) with bumped version
 - test `kotlin-sample` and `android-sample` with new local artifacts

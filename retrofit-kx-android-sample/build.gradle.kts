@@ -37,10 +37,6 @@ android {
             kotlin.srcDir("build/generated/ksp/$buildType/kotlin")
         }
     }
-
-    buildFeatures {
-        viewBinding = true
-    }
 }
 
 ksp {

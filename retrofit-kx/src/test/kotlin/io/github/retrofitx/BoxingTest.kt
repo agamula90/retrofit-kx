@@ -9,6 +9,8 @@ import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.RecordedRequest
+import okio.Buffer
+import okio.ByteString.Companion.decodeHex
 import org.junit.Rule
 import org.junit.Test
 import retrofit2.Retrofit
@@ -191,6 +193,26 @@ class BoxingTest {
         }
     }
 
+    @Test
+    fun testByteOrderMarkNotBrokeNotBoxedFunctionParsing() {
+        val serviceToTest = givenServiceToTest(boxedByDefault = false)
+
+        server.whenOrdinaryResponsesProvided(withByteOrderMark = true)
+        val user = serviceToTest.whenNotBoxedFunctionInvoked()
+
+        user.thenResponseIsCorrect()
+    }
+
+    @Test
+    fun testByteOrderMarkNotBrokeBoxedFunctionParsing() {
+        val serviceToTest = givenServiceToTest(boxedByDefault = false)
+
+        server.whenBoxedResponsesProvided(withByteOrderMark = true)
+        val user = serviceToTest.whenBoxedFunctionInvoked()
+
+        user.thenResponseIsCorrect()
+    }
+
     private fun AuthorisationService.whenBoxedFunctionInvoked(): UserDTO {
         return runBlocking { signIn(SignInRequest("Andrii")) }
     }
@@ -231,7 +253,7 @@ class BoxingTest {
             .create(AuthorisationService::class.java)
     }
 
-    private fun MockWebServer.whenBoxedResponsesProvided() {
+    private fun MockWebServer.whenBoxedResponsesProvided(withByteOrderMark: Boolean = false) {
         dispatcher = object: Dispatcher() {
             override fun dispatch(request: RecordedRequest): MockResponse {
                 return when(request.path!!) {
@@ -243,7 +265,8 @@ class BoxingTest {
                             |       "userId": 12,
                             |       "userName": "Andrii"
                             |   }
-                            |}""".trimMargin())
+                            |}""".trimMargin().toUtf8Buffer(withByteOrderMark)
+                        )
                     }
                     "/signUp" -> MockResponse()
                     else -> MockResponse().setResponseCode(404)
@@ -252,7 +275,16 @@ class BoxingTest {
         }
     }
 
-    private fun MockWebServer.whenOrdinaryResponsesProvided() {
+    private fun String.toUtf8Buffer(withByteOrderMark: Boolean = false): Buffer {
+        val result = Buffer()
+        if (withByteOrderMark) {
+            result.write("EFBBBF".decodeHex())
+        }
+        result.writeUtf8(this)
+        return result
+    }
+
+    private fun MockWebServer.whenOrdinaryResponsesProvided(withByteOrderMark: Boolean = false) {
         dispatcher = object: Dispatcher() {
             override fun dispatch(request: RecordedRequest): MockResponse {
                 return when(request.path!!) {
@@ -262,7 +294,8 @@ class BoxingTest {
                             |{
                             |   "userId": 12,
                             |   "userName": "Andrii"
-                            |}""".trimMargin())
+                            |}""".trimMargin().toUtf8Buffer(withByteOrderMark)
+                        )
                     }
                     "/signUp" -> MockResponse()
                     else -> MockResponse().setResponseCode(404)

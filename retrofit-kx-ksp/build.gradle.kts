@@ -1,4 +1,5 @@
 import java.util.Properties
+import kotlin.collections.*
 
 plugins {
     id ("org.jetbrains.kotlin.jvm")
@@ -6,6 +7,7 @@ plugins {
     id ("signing")
     id ("org.jetbrains.dokka")
     id ("retrofitx.publish")
+    id ("info.solidsoft.pitest")
 }
 
 val properties: Properties = Properties()
@@ -82,15 +84,37 @@ signing {
     sign(publishing.publications.getByName("maven"))
 }
 
+val mutableCodeBase: Configuration by configurations.creating {
+    isCanBeConsumed = false
+    isCanBeResolved = true
+    isTransitive = false
+    extendsFrom(project(":retrofit-kx").configurations.implementation.get())
+}
+
 dependencies {
     compileOnly ("com.google.devtools.ksp:symbol-processing-api:1.7.20-1.0.7")
     compileOnly ("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.7.20")
     implementation ("com.squareup:kotlinpoet:1.12.0")
     implementation ("com.squareup.moshi:moshi-kotlin-codegen:1.14.0")
-
     implementation (project(path = ":retrofit-kx"))
 
     testImplementation ("com.google.devtools.ksp:symbol-processing-api:1.7.20-1.0.7")
     testImplementation ("com.squareup.okhttp3:mockwebserver:4.10.0")
     testImplementation ("com.github.tschuchortdev:kotlin-compile-testing-ksp:1.4.9")
+}
+
+pitest {
+    val sourceSets = listOf(project.sourceSets, project(":retrofit-kx").sourceSets)
+    mainSourceSets.set(sourceSets.map { it.main.get() })
+    testSourceSets.set(sourceSets.map { it.test.get() })
+    additionalMutableCodePaths.set(mutableCodeBase.files)
+    timestampedReports.set(false)
+    targetClasses.set(listOf("io.github.retrofitx.internal.*"))
+    targetTests.set(listOf("io.github.retrofitx.*"))
+    threads.set(4)
+    outputFormats.set(listOf("HTML"))
+    // don't mutate kotlin internals
+    avoidCallsTo.set(listOf("kotlin.jvm.internal", "kotlin.io", "kotlinx.coroutines"))
+    // show logs
+    //verbose.set(true)
 }

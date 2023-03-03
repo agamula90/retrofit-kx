@@ -29,7 +29,7 @@ import java.lang.reflect.Type
 
 class ResponseBoxingFactory(
     private val moshi: Moshi,
-    private val boxedByDefault: Boolean = false
+    private val boxedByDefault: Boolean
 ) : Converter.Factory() {
 
     private val moshiConverterFactory = MoshiConverterFactory.create(moshi)
@@ -72,32 +72,25 @@ class ResponseBoxingFactory(
         )
     }
 
-    private inner class UnboxBodyConverter<T>(
+    private class UnboxBodyConverter<T>(
         private val adapter: JsonAdapter<T>
     ) : Converter<ResponseBody, T> {
 
         override fun convert(value: ResponseBody): T {
             return value.use {
                 val source = it.source()
-                // Moshi has no document-level API so the responsibility of BOM skipping falls to whatever
-                // is delegating to it. Since it's a UTF-8-only library as well we only honor the UTF-8 BOM.
-                if (source.rangeEquals(0, UTF8_BOM)) {
-                    source.skip(UTF8_BOM.size.toLong())
+                if (source.rangeEquals(0, BYTE_ORDER_MARK_STRING)) {
+                    source.skip(BYTE_ORDER_MARK_STRING.size.toLong())
                 }
                 val reader = JsonReader.of(source)
                 reader.beginObject()
                 reader.skipName()
-                val result: T = adapter.fromJson(reader)!!
-                reader.endObject()
-                if (reader.peek() != JsonReader.Token.END_DOCUMENT) {
-                    throw JsonDataException("JSON document was not fully consumed.")
-                }
-                result
+                adapter.fromJson(reader)!!
             }
         }
     }
 
     companion object {
-        private val UTF8_BOM: ByteString = "EFBBBF".decodeHex()
+        private val BYTE_ORDER_MARK_STRING: ByteString = "EFBBBF".decodeHex()
     }
 }
