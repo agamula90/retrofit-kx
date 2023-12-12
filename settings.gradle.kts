@@ -20,7 +20,7 @@ dependencyResolutionManagement {
 rootProject.name = "RetrofitKx"
 include(
     ":retrofit-kx-android-sample",
-    ":retrofit-kx-kotlin-sample",
-    ":retrofit-kx-ksp",
+    //":retrofit-kx-kotlin-sample",
+    //":retrofit-kx-ksp",
     ":retrofit-kx"
 )

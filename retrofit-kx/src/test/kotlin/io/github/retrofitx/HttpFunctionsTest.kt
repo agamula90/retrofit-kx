@@ -116,6 +116,9 @@ class HttpFunctionsTest {
         serviceToTest.whenDataFunctionInvoked()
     }
 
+    //application - created by system
+    //set application as parameter to graph with setter method
+
     @Test(expected = ParseFailureException::class)
     fun testDataFunctionFailedWhenErrorIsNotJson() {
         val serviceToTest = givenServiceToTest()

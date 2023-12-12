@@ -7,6 +7,7 @@ import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
 class RetrofitKxApp: Application() {
+
     override fun onCreate() {
         super.onCreate()
         val config = NotificationConfig.Builder(this)

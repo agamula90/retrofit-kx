@@ -5,7 +5,7 @@ plugins {
     id ("com.google.dagger.hilt.android")
     id ("kotlin-kapt")
     id ("kotlin-parcelize")
-    id ("retrofitx.publish")
+    //id ("retrofitx.publish")
 }
 
 android {
@@ -37,10 +37,14 @@ android {
             kotlin.srcDir("build/generated/ksp/$buildType/kotlin")
         }
     }
-}
+    buildFeatures {
+        buildConfig = true
+    }
 
-ksp {
-    arg("servicesPackage", "io.github.retrofitx.android.remote")
+    compileOptions {
+        sourceCompatibility(JavaVersion.VERSION_17)
+        targetCompatibility(JavaVersion.VERSION_17)
+    }
 }
 
 dependencies {
@@ -52,11 +56,12 @@ dependencies {
 
     implementation ("androidx.navigation:navigation-fragment-ktx:2.5.3")
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
-    implementation ("com.google.dagger:hilt-android:2.44")
-    kapt ("com.google.dagger:hilt-compiler:2.44")
+    implementation ("com.google.dagger:hilt-android:2.49")
+    ksp ("com.google.dagger:hilt-compiler:2.49")
+    ksp ("com.squareup.moshi:moshi-kotlin-codegen:1.14.0")
 
-    implementation ("io.github.agamula90:retrofit-kx:${publishEnvironment.releaseVersion}")
-    ksp ("io.github.agamula90:retrofit-kx-ksp:${publishEnvironment.releaseVersion}")
+    implementation (project(":retrofit-kx"))
+    //ksp ("io.github.agamula90:retrofit-kx-ksp:${publishEnvironment.releaseVersion}")
 
     debugImplementation ("com.github.YarikSOffice.Venom:venom:0.5.0")
     releaseImplementation ("com.github.YarikSOffice.Venom:venom-no-op:0.5.0")

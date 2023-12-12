@@ -3,10 +3,10 @@ import java.util.Properties
 plugins {
     id("org.jetbrains.kotlin.jvm")
     id("com.google.devtools.ksp")
-    id("maven-publish")
+    //id("maven-publish")
     id("signing")
     id("org.jetbrains.dokka")
-    id("retrofitx.publish")
+    //id("retrofitx.publish")
 }
 
 val properties: Properties = Properties()
@@ -23,7 +23,7 @@ val javadocJar = tasks.create<Jar>("libraryDocs") {
     archiveClassifier.set("javadoc")
 }
 
-publishing {
+/*publishing {
     publications {
         create<MavenPublication>("maven") {
             groupId = "io.github.agamula90"
@@ -73,14 +73,14 @@ publishing {
             }
         }
     }
-}
+}*/
 
 signing {
     val publishKeyId = properties["publishKeyId"].toString()
     val publishSecret = properties["publishSecret"].toString()
     val publishPassword = properties["publishPassword"].toString()
     useInMemoryPgpKeys(publishKeyId, publishSecret, publishPassword)
-    sign(publishing.publications.getByName("maven"))
+    //sign(publishing.publications.getByName("maven"))
 }
 
 dependencies {

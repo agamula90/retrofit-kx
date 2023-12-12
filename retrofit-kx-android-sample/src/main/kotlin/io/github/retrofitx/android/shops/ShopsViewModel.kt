@@ -4,14 +4,18 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.squareup.moshi.JsonAdapter
 import io.github.retrofitx.DataResponse
 import io.github.retrofitx.ParseFailureException
-import io.github.retrofitx.ShopService
 import io.github.retrofitx.android.NavigationDispatcher
 import io.github.retrofitx.android.R
 import io.github.retrofitx.android.dto.Shop
 import io.github.retrofitx.android.shops.details.ShopDetailsViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.github.retrofitx.android.dto.DefaultError
+import io.github.retrofitx.android.inject.DeferredValue
+import io.github.retrofitx.android.remote.ShopService
+import io.github.retrofitx.internal.invokeDataFunction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
@@ -21,7 +25,8 @@ import javax.inject.Inject
 class ShopsViewModel @Inject constructor(
     handle: SavedStateHandle,
     private val navigationDispatcher: NavigationDispatcher,
-    private val shopService: ShopService
+    private val shopService: DeferredValue<ShopService>,
+    private val errorAdapter: JsonAdapter<DefaultError>
 ): ViewModel() {
     val events = Channel<ShopEvent>()
     val shops = handle.getLiveData<List<Shop>>("shops", emptyList())
@@ -42,7 +47,7 @@ class ShopsViewModel @Inject constructor(
     fun loadShops() = viewModelScope.launch(Dispatchers.IO) {
         try {
             isParseFailed.postValue(false)
-            when(val response = shopService.getShops()) {
+            when(val response = invokeDataFunction({shopService.get().getShops()}, errorAdapter)) {
                 is DataResponse.Success -> shops.postValue(response.data)
                 is DataResponse.ApiError -> {
                     events.send(ShopEvent.ShowApiErrorMessage(response.cause))
