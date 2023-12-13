@@ -11,7 +11,7 @@ import io.github.retrofitx.android.dto.Product
 import io.github.retrofitx.android.products.ProductsViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.retrofitx.android.dto.IdError
-import io.github.retrofitx.android.inject.DeferredValue
+import io.github.retrofitx.android.inject.DynamicRetrofit
 import io.github.retrofitx.android.remote.ProductService
 import io.github.retrofitx.internal.invokeDataFunction
 import kotlinx.coroutines.Dispatchers
@@ -22,15 +22,18 @@ import javax.inject.Inject
 @HiltViewModel
 class ProductDetailsViewModel @Inject constructor(
     handle: SavedStateHandle,
-    private val productService: DeferredValue<ProductService>,
+    private val retrofit: DynamicRetrofit,
     private val errorAdapter: JsonAdapter<IdError>,
     private val navigationDispatcher: NavigationDispatcher
 ): ViewModel() {
     val product = handle.get<Product>(PRODUCT)!!
     val events = Channel<ProductDetailsEvent>()
 
+    private val productService: ProductService
+        get() = retrofit.create(ProductService::class.java)
+
     fun deleteProduct() = viewModelScope.launch(Dispatchers.IO) {
-        when(val response = invokeDataFunction( {productService.get().deleteProduct(product.name) }, errorAdapter)) {
+        when(val response = invokeDataFunction( {productService.deleteProduct(product.name) }, errorAdapter)) {
             is DataResponse.Success -> {
                 navigationDispatcher.setNavigationResult(
                     backStackDestinationId = R.id.products,

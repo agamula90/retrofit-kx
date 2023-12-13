@@ -13,7 +13,7 @@ import io.github.retrofitx.android.dto.Shop
 import io.github.retrofitx.android.shops.details.ShopDetailsViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.retrofitx.android.dto.DefaultError
-import io.github.retrofitx.android.inject.DeferredValue
+import io.github.retrofitx.android.inject.DynamicRetrofit
 import io.github.retrofitx.android.remote.ShopService
 import io.github.retrofitx.internal.invokeDataFunction
 import kotlinx.coroutines.Dispatchers
@@ -25,12 +25,15 @@ import javax.inject.Inject
 class ShopsViewModel @Inject constructor(
     handle: SavedStateHandle,
     private val navigationDispatcher: NavigationDispatcher,
-    private val shopService: DeferredValue<ShopService>,
+    private val retrofit: DynamicRetrofit,
     private val errorAdapter: JsonAdapter<DefaultError>
 ): ViewModel() {
     val events = Channel<ShopEvent>()
     val shops = handle.getLiveData<List<Shop>>("shops", emptyList())
     val isParseFailed = handle.getLiveData("isParseFailed", false)
+
+    private val shopService: ShopService
+        get() = retrofit.create(ShopService::class.java)
 
     init {
         if (handle.get<List<Shop>>("shops").isNullOrEmpty()) {
@@ -47,7 +50,7 @@ class ShopsViewModel @Inject constructor(
     fun loadShops() = viewModelScope.launch(Dispatchers.IO) {
         try {
             isParseFailed.postValue(false)
-            when(val response = invokeDataFunction({shopService.get().getShops()}, errorAdapter)) {
+            when(val response = invokeDataFunction({shopService.getShops()}, errorAdapter)) {
                 is DataResponse.Success -> shops.postValue(response.data)
                 is DataResponse.ApiError -> {
                     events.send(ShopEvent.ShowApiErrorMessage(response.cause))

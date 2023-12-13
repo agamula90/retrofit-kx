@@ -11,7 +11,7 @@ import io.github.retrofitx.android.dto.Shop
 import io.github.retrofitx.android.shops.ShopsViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.retrofitx.android.dto.DefaultError
-import io.github.retrofitx.android.inject.DeferredValue
+import io.github.retrofitx.android.inject.DynamicRetrofit
 import io.github.retrofitx.android.remote.ShopService
 import io.github.retrofitx.internal.invokeUnitFunction
 import kotlinx.coroutines.Dispatchers
@@ -22,15 +22,18 @@ import javax.inject.Inject
 @HiltViewModel
 class ShopDetailsViewModel @Inject constructor(
     handle: SavedStateHandle,
-    private val shopService: DeferredValue<ShopService>,
+    private val retrofit: DynamicRetrofit,
     private val errorAdapter: JsonAdapter<DefaultError>,
     private val navigationDispatcher: NavigationDispatcher
 ): ViewModel() {
     val events = Channel<ShopDetailsEvent>()
     val shop = handle.get<Shop>(SHOP)!!
 
+    private val shopService: ShopService
+        get() = retrofit.create(ShopService::class.java)
+
     fun deleteShop() = viewModelScope.launch(Dispatchers.IO) {
-        when(val response = invokeUnitFunction({shopService.get().deleteShop(shop.id)}, errorAdapter)) {
+        when(val response = invokeUnitFunction({shopService.deleteShop(shop.id)}, errorAdapter)) {
             is UnitResponse.Success -> {
                 navigationDispatcher.setNavigationResult(
                     backStackDestinationId = R.id.shops,

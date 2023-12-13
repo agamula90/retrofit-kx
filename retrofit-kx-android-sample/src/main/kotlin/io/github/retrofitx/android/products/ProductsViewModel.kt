@@ -1,6 +1,5 @@
 package io.github.retrofitx.android.products
 
-import android.os.Build
 import androidx.core.os.bundleOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -14,7 +13,7 @@ import io.github.retrofitx.android.dto.Product
 import io.github.retrofitx.android.products.details.ProductDetailsViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.retrofitx.android.dto.IdError
-import io.github.retrofitx.android.inject.DeferredValue
+import io.github.retrofitx.android.inject.DynamicRetrofit
 import io.github.retrofitx.android.remote.ProductService
 import io.github.retrofitx.internal.invokeDataFunction
 import kotlinx.coroutines.Dispatchers
@@ -26,13 +25,15 @@ import javax.inject.Inject
 class ProductsViewModel @Inject constructor(
     handle: SavedStateHandle,
     private val navigationDispatcher: NavigationDispatcher,
-    private val productService: DeferredValue<ProductService>,
+    private val retrofit: DynamicRetrofit,
     private val errorAdapter: JsonAdapter<IdError>
 ): ViewModel() {
     val events = Channel<ProductEvent>()
     val products = handle.getLiveData<List<Product>>("products", emptyList())
     val isParseFailed = handle.getLiveData("isParseFailed", false)
 
+    private val productService: ProductService
+        get() = retrofit.create(ProductService::class.java)
     init {
         if (handle.get<List<Product>>("products").isNullOrEmpty()) {
             loadProducts()
@@ -48,7 +49,7 @@ class ProductsViewModel @Inject constructor(
     fun loadProducts() = viewModelScope.launch(Dispatchers.IO) {
         try {
             isParseFailed.postValue(false)
-            when(val response = invokeDataFunction({ productService.get().getProducts() }, errorAdapter)) {
+            when(val response = invokeDataFunction({ productService.getProducts() }, errorAdapter)) {
                 is DataResponse.Success -> products.postValue(response.data.data)
                 is DataResponse.ApiError -> {
                     events.send(ProductEvent.ShowApiErrorMessage(response.cause))
