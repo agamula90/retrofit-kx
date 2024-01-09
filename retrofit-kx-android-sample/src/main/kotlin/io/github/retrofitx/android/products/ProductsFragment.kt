@@ -12,12 +12,11 @@ import io.github.retrofitx.android.utils.RecyclerViewHorizontalSpaceDecoration
 import io.github.retrofitx.android.utils.RecyclerViewVerticalSpaceDecoration
 import io.github.retrofitx.android.utils.showToast
 import io.github.retrofitx.android.utils.viewBinding
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-@AndroidEntryPoint
 class ProductsFragment: Fragment(R.layout.products) {
-    private val viewModel by viewModels<ProductsViewModel>()
+    private val viewModel by viewModel<ProductsViewModel>()
     private val binding by viewBinding(ProductsBinding::bind)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

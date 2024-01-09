@@ -2,7 +2,6 @@ plugins {
     id ("com.android.application")
     id ("org.jetbrains.kotlin.android")
     id ("com.google.devtools.ksp")
-    id ("com.google.dagger.hilt.android")
     id ("kotlin-kapt")
     id ("kotlin-parcelize")
     id ("retrofitx.publish")
@@ -41,6 +40,7 @@ android {
 
 ksp {
     arg("servicesPackage", "io.github.retrofitx.android.remote")
+    //arg("KOIN_CONFIG_CHECK","true")
 }
 
 dependencies {
@@ -52,12 +52,17 @@ dependencies {
 
     implementation ("androidx.navigation:navigation-fragment-ktx:2.5.3")
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
-    implementation ("com.google.dagger:hilt-android:2.44")
-    kapt ("com.google.dagger:hilt-compiler:2.44")
 
     implementation ("io.github.agamula90:retrofit-kx:${publishEnvironment.releaseVersion}")
     ksp ("io.github.agamula90:retrofit-kx-ksp:${publishEnvironment.releaseVersion}")
 
     debugImplementation ("com.github.YarikSOffice.Venom:venom:0.5.0")
     releaseImplementation ("com.github.YarikSOffice.Venom:venom-no-op:0.5.0")
+
+    val koinVersion = "3.3.2"
+    val koinKspVersion = "1.3.0"
+
+    implementation ("io.insert-koin:koin-android:$koinVersion")
+    //implementation ("io.insert-koin:koin-annotations:$koinKspVersion")
+    //ksp ("io.insert-koin:koin-ksp-compiler:$koinKspVersion")
 }

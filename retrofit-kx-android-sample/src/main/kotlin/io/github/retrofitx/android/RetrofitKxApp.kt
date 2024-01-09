@@ -3,9 +3,11 @@ package io.github.retrofitx.android
 import android.app.Application
 import com.github.venom.Venom
 import com.github.venom.service.NotificationConfig
-import dagger.hilt.android.HiltAndroidApp
+import io.github.retrofitx.android.inject.remoteModule
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.startKoin
 
-@HiltAndroidApp
 class RetrofitKxApp: Application() {
     override fun onCreate() {
         super.onCreate()
@@ -17,6 +19,12 @@ class RetrofitKxApp: Application() {
         Venom.createInstance(this).apply {
             initialize(config)
             start()
+        }
+
+        startKoin {
+            androidContext(this@RetrofitKxApp)
+            androidLogger()
+            modules(remoteModule)
         }
     }
 }

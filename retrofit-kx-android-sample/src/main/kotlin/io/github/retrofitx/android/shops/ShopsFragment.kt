@@ -12,12 +12,12 @@ import io.github.retrofitx.android.utils.RecyclerViewHorizontalSpaceDecoration
 import io.github.retrofitx.android.utils.RecyclerViewVerticalSpaceDecoration
 import io.github.retrofitx.android.utils.showToast
 import io.github.retrofitx.android.utils.viewBinding
-import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
-@AndroidEntryPoint
+import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
+
 class ShopsFragment: Fragment(R.layout.shops) {
-    private val viewModel by viewModels<ShopsViewModel>()
+    private val viewModel by viewModel<ShopsViewModel>()
     private val binding by viewBinding(ShopsBinding::bind)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

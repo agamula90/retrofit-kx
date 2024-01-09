@@ -9,14 +9,11 @@ import io.github.retrofitx.android.NavigationDispatcher
 import io.github.retrofitx.android.R
 import io.github.retrofitx.android.dto.Shop
 import io.github.retrofitx.android.shops.ShopsViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class ShopDetailsViewModel @Inject constructor(
+class ShopDetailsViewModel(
     handle: SavedStateHandle,
     private val shopService: ShopService,
     private val navigationDispatcher: NavigationDispatcher

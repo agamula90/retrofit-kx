@@ -6,7 +6,7 @@ import org.gradle.kotlin.dsl.add
 import javax.inject.Inject
 
 private val publishEnvironment = Environment.create(
-    isReleaseReady = true,
+    isReleaseReady = false,
     baseVersion = "0.0.2"
 )
 

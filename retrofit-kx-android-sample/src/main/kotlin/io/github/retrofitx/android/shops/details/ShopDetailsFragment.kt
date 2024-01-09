@@ -9,12 +9,12 @@ import io.github.retrofitx.android.R
 import io.github.retrofitx.android.databinding.LayoutShopDetailsBinding
 import io.github.retrofitx.android.utils.showToast
 import io.github.retrofitx.android.utils.viewBinding
-import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
-@AndroidEntryPoint
+import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
+
 class ShopDetailsFragment : Fragment(R.layout.layout_shop_details) {
-    private val viewModel by viewModels<ShopDetailsViewModel>()
+    private val viewModel by viewModel<ShopDetailsViewModel>()
     private val binding by viewBinding(LayoutShopDetailsBinding::bind)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

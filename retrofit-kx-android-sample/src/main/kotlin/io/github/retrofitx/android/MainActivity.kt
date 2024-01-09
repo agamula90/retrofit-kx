@@ -12,18 +12,14 @@ import io.github.retrofitx.android.BuildConfig
 import io.github.retrofitx.android.R
 import io.github.retrofitx.android.databinding.ActivityMainBinding
 import io.github.retrofitx.android.simple.DataStoreManager
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
-@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    @Inject
-    lateinit var navigationDispatcher: NavigationDispatcher
+    private val navigationDispatcher: NavigationDispatcher by inject()
 
-    @Inject
-    lateinit var dataStoreManager: DataStoreManager
+    private val dataStoreManager: DataStoreManager by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

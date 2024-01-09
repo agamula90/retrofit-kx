@@ -2,14 +2,11 @@ package io.github.retrofitx.android.settings
 
 import androidx.lifecycle.*
 import io.github.retrofitx.android.simple.DataStoreManager
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class SettingsViewModel @Inject constructor(
+class SettingsViewModel(
     private val dataStoreManager: DataStoreManager,
     handle: SavedStateHandle
 ): ViewModel() {

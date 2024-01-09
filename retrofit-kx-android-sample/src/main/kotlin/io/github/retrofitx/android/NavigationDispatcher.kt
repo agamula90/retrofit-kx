@@ -6,8 +6,6 @@ import androidx.lifecycle.SavedStateHandle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -21,8 +19,7 @@ class StateHandleRequest(
     val stateHandleCallback: (SavedStateHandle) -> Unit
 )
 
-@Singleton
-class NavigationDispatcher @Inject constructor() {
+class NavigationDispatcher {
     val events = Channel<NavEvent>()
     val stateHandleRequests = Channel<StateHandleRequest>()
 

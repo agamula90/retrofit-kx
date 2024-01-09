@@ -11,11 +11,10 @@ import io.github.retrofitx.android.utils.hideKeyboard
 import io.github.retrofitx.android.utils.setTextIfChanged
 import io.github.retrofitx.android.utils.showToast
 import io.github.retrofitx.android.utils.viewBinding
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-@AndroidEntryPoint
 class SettingsFragment: Fragment(R.layout.settings) {
-    private val viewModel by viewModels<SettingsViewModel>()
+    private val viewModel by viewModel<SettingsViewModel>()
     private val binding by viewBinding(SettingsBinding::bind)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
