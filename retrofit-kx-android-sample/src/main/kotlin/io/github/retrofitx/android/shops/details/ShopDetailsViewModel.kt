@@ -12,7 +12,9 @@ import io.github.retrofitx.android.shops.ShopsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
+import org.koin.android.annotation.KoinViewModel
 
+@KoinViewModel
 class ShopDetailsViewModel(
     handle: SavedStateHandle,
     private val shopService: ShopService,

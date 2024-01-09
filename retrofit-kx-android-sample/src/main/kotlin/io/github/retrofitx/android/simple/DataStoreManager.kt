@@ -11,7 +11,9 @@ import io.github.retrofitx.android.BuildConfig
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import org.koin.core.annotation.Single
 
+@Single
 class DataStoreManager(
     private val context: Context
 ) {

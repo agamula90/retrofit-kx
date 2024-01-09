@@ -5,7 +5,9 @@ import io.github.retrofitx.android.simple.DataStoreManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import org.koin.android.annotation.KoinViewModel
 
+@KoinViewModel
 class SettingsViewModel(
     private val dataStoreManager: DataStoreManager,
     handle: SavedStateHandle

@@ -13,7 +13,9 @@ import io.github.retrofitx.android.products.ProductsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
+import org.koin.android.annotation.KoinViewModel
 
+@KoinViewModel
 class ProductDetailsViewModel(
     handle: SavedStateHandle,
     private val productService: ProductService,

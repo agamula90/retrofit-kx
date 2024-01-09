@@ -40,7 +40,7 @@ android {
 
 ksp {
     arg("servicesPackage", "io.github.retrofitx.android.remote")
-    //arg("KOIN_CONFIG_CHECK","true")
+    arg("KOIN_CONFIG_CHECK","true")
 }
 
 dependencies {
@@ -60,9 +60,9 @@ dependencies {
     releaseImplementation ("com.github.YarikSOffice.Venom:venom-no-op:0.5.0")
 
     val koinVersion = "3.3.2"
-    val koinKspVersion = "1.3.0"
+    val koinKspVersion = "1.1.0"
 
     implementation ("io.insert-koin:koin-android:$koinVersion")
-    //implementation ("io.insert-koin:koin-annotations:$koinKspVersion")
-    //ksp ("io.insert-koin:koin-ksp-compiler:$koinKspVersion")
+    implementation ("io.insert-koin:koin-annotations:$koinKspVersion")
+    ksp ("io.insert-koin:koin-ksp-compiler:$koinKspVersion")
 }

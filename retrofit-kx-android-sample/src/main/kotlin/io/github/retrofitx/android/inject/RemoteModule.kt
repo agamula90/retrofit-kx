@@ -2,26 +2,22 @@ package io.github.retrofitx.android.inject
 
 import io.github.retrofitx.RetrofitX
 import io.github.retrofitx.android.BuildConfig
-import io.github.retrofitx.android.NavigationDispatcher
-import io.github.retrofitx.android.shops.ShopsViewModel
-import io.github.retrofitx.android.shops.details.ShopDetailsViewModel
-import io.github.retrofitx.android.products.ProductsViewModel
-import io.github.retrofitx.android.products.details.ProductDetailsViewModel
-import io.github.retrofitx.android.settings.SettingsViewModel
 import io.github.retrofitx.android.simple.DataStoreManager
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import org.koin.android.ext.koin.androidApplication
-import org.koin.androidx.viewmodel.dsl.viewModelOf
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
 import org.koin.dsl.module
 
+@Module
+@ComponentScan("io.github.retrofitx.android")
+object AnnotationBasedModule {
+
+}
 
 val remoteModule = module {
-    single {
-        DataStoreManager(androidApplication().applicationContext)
-    }
     single {
         provideOkHttpClient()
     }
@@ -34,14 +30,6 @@ val remoteModule = module {
     factory {
         get<RetrofitX>(RetrofitX::class).productService
     }
-    single {
-        NavigationDispatcher()
-    }
-    viewModelOf(::ShopsViewModel)
-    viewModelOf(::ShopDetailsViewModel)
-    viewModelOf(::ProductsViewModel)
-    viewModelOf(::ProductDetailsViewModel)
-    viewModelOf(::SettingsViewModel)
 }
 
 private fun provideOkHttpClient() = OkHttpClient.Builder()
