@@ -18,14 +18,6 @@ package io.github.retrofitx
 import java.io.IOException
 
 /**
- * This exception will be thrown when response body parsing failed either for success response or error response
- *
- * @see [DataResponse]
- * @see [UnitResponse]
- */
-class ParseFailureException(isApiErrorParsingFailure: Boolean) : RuntimeException("[isApiErrorParsingFailure:$isApiErrorParsingFailure]")
-
-/**
  * This class represent result of http function invocation that has body.
  * - Success contains parsed response body, will be used if request succeeded
  * - ConnectionError contains [IOException] that caused request to fail

@@ -3,13 +3,15 @@ package io.github.retrofitx.android.products.details
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.retrofitx.DataResponse
-import io.github.retrofitx.ProductService
+import com.skydoves.sandwich.ApiResponse
+import com.skydoves.sandwich.retrofit.serialization.deserializeErrorBody
 import io.github.retrofitx.android.NavigationDispatcher
 import io.github.retrofitx.android.R
 import io.github.retrofitx.android.dto.Product
 import io.github.retrofitx.android.products.ProductsViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.github.retrofitx.android.dto.IdError
+import io.github.retrofitx.android.remote.ProductService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
@@ -26,7 +28,7 @@ class ProductDetailsViewModel @Inject constructor(
 
     fun deleteProduct() = viewModelScope.launch(Dispatchers.IO) {
         when(val response = productService.deleteProduct(product.name)) {
-            is DataResponse.Success -> {
+            is ApiResponse.Success -> {
                 navigationDispatcher.setNavigationResult(
                     backStackDestinationId = R.id.products,
                     navigationKey = ProductsViewModel.RELOAD_PRODUCTS,
@@ -35,11 +37,12 @@ class ProductDetailsViewModel @Inject constructor(
                 // comment to get api error message on subsequent product deletion
                 navigationDispatcher.navigateBack()
             }
-            is DataResponse.ConnectionError -> {
+            is ApiResponse.Failure.Exception -> {
                 events.send(ProductDetailsEvent.ShowConnectionErrorMessage)
             }
-            is DataResponse.ApiError -> {
-                events.send(ProductDetailsEvent.ShowApiErrorMessage(response.cause))
+            is ApiResponse.Failure.Error -> {
+                val error = response.deserializeErrorBody<Any, IdError>()!!
+                events.send(ProductDetailsEvent.ShowApiErrorMessage(error))
             }
         }
     }

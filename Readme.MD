@@ -1,4 +1,6 @@
-## Retrofit-kx
+## Retrofit-kx deprecated
+
+Use [Sandwich](https://github.com/skydoves/sandwich) instead. Integration details can be found in retrofit-kx-android-sample
 
 Wrapper around [Retrofit](https://github.com/square/retrofit) library, that provides kotlin friendly api.  
 [Retrofit](https://github.com/square/retrofit) is really powerful and nice library from square to handle http communication with usage of annotations.  

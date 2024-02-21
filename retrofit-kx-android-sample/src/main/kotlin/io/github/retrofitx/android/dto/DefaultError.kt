@@ -1,8 +1,6 @@
 package io.github.retrofitx.android.dto
 
-import com.squareup.moshi.JsonClass
-import io.github.retrofitx.RetrofitError
+import kotlinx.serialization.Serializable
 
-@JsonClass(generateAdapter = true)
-@RetrofitError
+@Serializable
 class DefaultError(val message: String)

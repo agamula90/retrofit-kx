@@ -4,14 +4,14 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.retrofitx.DataResponse
-import io.github.retrofitx.ParseFailureException
-import io.github.retrofitx.ShopService
+import com.skydoves.sandwich.ApiResponse
+import com.skydoves.sandwich.retrofit.serialization.deserializeErrorBody
 import io.github.retrofitx.android.NavigationDispatcher
 import io.github.retrofitx.android.R
 import io.github.retrofitx.android.dto.Shop
 import io.github.retrofitx.android.shops.details.ShopDetailsViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.github.retrofitx.android.dto.DefaultError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
@@ -21,8 +21,8 @@ import javax.inject.Inject
 class ShopsViewModel @Inject constructor(
     handle: SavedStateHandle,
     private val navigationDispatcher: NavigationDispatcher,
-    private val shopService: ShopService
-): ViewModel() {
+    private val shopService: io.github.retrofitx.android.remote.ShopService
+) : ViewModel() {
     val events = Channel<ShopEvent>()
     val shops = handle.getLiveData<List<Shop>>("shops", emptyList())
     val isParseFailed = handle.getLiveData("isParseFailed", false)
@@ -40,25 +40,25 @@ class ShopsViewModel @Inject constructor(
     }
 
     fun loadShops() = viewModelScope.launch(Dispatchers.IO) {
-        try {
-            isParseFailed.postValue(false)
-            when(val response = shopService.getShops()) {
-                is DataResponse.Success -> shops.postValue(response.data)
-                is DataResponse.ApiError -> {
-                    events.send(ShopEvent.ShowApiErrorMessage(response.cause))
-                }
-                is DataResponse.ConnectionError -> {
-                    events.send(ShopEvent.ShowConnectionErrorMessage)
-                }
+        isParseFailed.postValue(false)
+        when (val response = shopService.getShops()) {
+            is ApiResponse.Success -> shops.postValue(response.data)
+            is ApiResponse.Failure.Error -> {
+                val error = response.deserializeErrorBody<Any, DefaultError>()!!
+                events.send(ShopEvent.ShowApiErrorMessage(error))
             }
-        } catch (e: ParseFailureException) {
-            shops.postValue(emptyList())
-            isParseFailed.postValue(true)
+
+            is ApiResponse.Failure.Exception -> {
+                events.send(ShopEvent.ShowConnectionErrorMessage)
+            }
         }
     }
 
     fun goShopDetails(shop: Shop) {
-        navigationDispatcher.navigate(R.id.goShopDetails, bundleOf(ShopDetailsViewModel.SHOP to shop))
+        navigationDispatcher.navigate(
+            R.id.goShopDetails,
+            bundleOf(ShopDetailsViewModel.SHOP to shop)
+        )
     }
 
     companion object {

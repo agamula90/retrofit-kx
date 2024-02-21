@@ -1,18 +1,18 @@
 package io.github.retrofitx.android.products
 
-import android.os.Build
 import androidx.core.os.bundleOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.retrofitx.DataResponse
-import io.github.retrofitx.ParseFailureException
-import io.github.retrofitx.ProductService
+import com.skydoves.sandwich.ApiResponse
+import com.skydoves.sandwich.retrofit.serialization.deserializeErrorBody
 import io.github.retrofitx.android.NavigationDispatcher
 import io.github.retrofitx.android.R
 import io.github.retrofitx.android.dto.Product
 import io.github.retrofitx.android.products.details.ProductDetailsViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.github.retrofitx.android.dto.IdError
+import io.github.retrofitx.android.remote.ProductService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
@@ -23,7 +23,7 @@ class ProductsViewModel @Inject constructor(
     handle: SavedStateHandle,
     private val navigationDispatcher: NavigationDispatcher,
     private val productService: ProductService
-): ViewModel() {
+) : ViewModel() {
     val events = Channel<ProductEvent>()
     val products = handle.getLiveData<List<Product>>("products", emptyList())
     val isParseFailed = handle.getLiveData("isParseFailed", false)
@@ -41,26 +41,25 @@ class ProductsViewModel @Inject constructor(
     }
 
     fun loadProducts() = viewModelScope.launch(Dispatchers.IO) {
-        try {
-            Build.VERSION_CODES.TIRAMISU
-            isParseFailed.postValue(false)
-            when(val response = productService.getProducts()) {
-                is DataResponse.Success -> products.postValue(response.data)
-                is DataResponse.ApiError -> {
-                    events.send(ProductEvent.ShowApiErrorMessage(response.cause))
-                }
-                is DataResponse.ConnectionError -> {
-                    events.send(ProductEvent.ShowConnectionErrorMessage)
-                }
+        isParseFailed.postValue(false)
+        when (val response = productService.getProducts()) {
+            is ApiResponse.Success -> products.postValue(response.data.data)
+            is ApiResponse.Failure.Error -> {
+                val error = response.deserializeErrorBody<Any, IdError>()!!
+                events.send(ProductEvent.ShowApiErrorMessage(error))
             }
-        } catch (e: ParseFailureException) {
-            products.postValue(emptyList())
-            isParseFailed.postValue(true)
+
+            is ApiResponse.Failure.Exception -> {
+                events.send(ProductEvent.ShowConnectionErrorMessage)
+            }
         }
     }
 
     fun goProductDetails(product: Product) {
-        navigationDispatcher.navigate(R.id.goProductDetails, bundleOf(ProductDetailsViewModel.PRODUCT to product))
+        navigationDispatcher.navigate(
+            R.id.goProductDetails,
+            bundleOf(ProductDetailsViewModel.PRODUCT to product)
+        )
     }
 
     companion object {

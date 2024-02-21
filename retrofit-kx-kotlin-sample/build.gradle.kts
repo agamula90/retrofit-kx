@@ -13,6 +13,6 @@ ksp {
 }
 
 dependencies {
-    implementation ("io.github.agamula90:retrofit-kx:${publishEnvironment.releaseVersion}")
-    ksp ("io.github.agamula90:retrofit-kx-ksp:${publishEnvironment.releaseVersion}")
+    implementation (project(":retrofit-kx"))
+    ksp (project(":retrofit-kx-ksp"))
 }

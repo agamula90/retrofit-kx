@@ -1,6 +1,6 @@
 package io.github.retrofitx.android.dto
 
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.Serializable
 
-@JsonClass(generateAdapter = true)
+@Serializable
 class IdError(val id: Int)

@@ -28,28 +28,20 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import java.lang.reflect.Type
 
 class ResponseBoxingFactory(
-    private val moshi: Moshi,
-    private val boxedByDefault: Boolean
+    private val moshi: Moshi
 ) : Converter.Factory() {
-
-    private val moshiConverterFactory = MoshiConverterFactory.create(moshi)
 
     override fun responseBodyConverter(
         type: Type,
         annotations: Array<out Annotation>,
         retrofit: Retrofit
     ): Converter<ResponseBody, *>? {
-        val shouldUnbox = annotations.any { it.annotationClass == Boxed::class } ||
-                (boxedByDefault && annotations.all { it.annotationClass != NotBoxed::class })
+        val shouldUnbox = annotations.any { it.annotationClass == Boxed::class }
 
         return when {
             shouldUnbox -> UnboxBodyConverter(moshi.adapter<Any>(type, emptySet()))
             else -> {
-                moshiConverterFactory.responseBodyConverter(
-                    type,
-                    annotations.withoutRetrofitKxAnnotations(),
-                    retrofit
-                )
+                null
             }
         }
     }
@@ -64,12 +56,7 @@ class ResponseBoxingFactory(
         methodAnnotations: Array<out Annotation>,
         retrofit: Retrofit
     ): Converter<*, RequestBody>? {
-        return moshiConverterFactory.requestBodyConverter(
-            type,
-            parameterAnnotations,
-            methodAnnotations.withoutRetrofitKxAnnotations(),
-            retrofit
-        )
+        return null
     }
 
     private class UnboxBodyConverter<T>(

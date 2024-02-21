@@ -1,19 +1,19 @@
 package io.github.retrofitx.android.inject
 
-import io.github.retrofitx.ProductService
-import io.github.retrofitx.RetrofitX
-import io.github.retrofitx.ShopService
+import com.skydoves.sandwich.retrofit.adapters.ApiResponseCallAdapterFactory
+import com.squareup.moshi.Moshi
 import io.github.retrofitx.android.BuildConfig
-import io.github.retrofitx.android.simple.DataStoreManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
+import io.github.retrofitx.android.remote.ProductService
+import io.github.retrofitx.android.remote.ShopService
 import javax.inject.Singleton
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -34,30 +34,30 @@ object RemoteModule {
             .build()
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     @Singleton
     @Provides
-    fun provideRetrofitX(
-        dataStoreManager: DataStoreManager,
-        okHttpClient: OkHttpClient
-    ): RetrofitX {
-        return RetrofitX(
-            baseUrl = dataStoreManager.getBaseUrl(),
-            okHttpClient = okHttpClient,
-            scope = GlobalScope,
-            boxedByDefault = true
-        )
-        //TODO uncomment to test with static base url
-        //return RetrofitX(baseUrl = BuildConfig.BASE_URL, okHttpClient = okHttpClient)
+    fun provideMoshi(): Moshi {
+        return Moshi.Builder().build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideRetrofit(moshi: Moshi, okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(BuildConfig.BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .addCallAdapterFactory(ApiResponseCallAdapterFactory.create())
+            .callFactory(okHttpClient)
+            .build()
     }
 
     @Provides
-    fun provideShopService(retrofitX: RetrofitX): ShopService {
-        return retrofitX.shopService
+    fun provideShopService(retrofit: Retrofit): ShopService {
+        return retrofit.create(ShopService::class.java)
     }
 
     @Provides
-    fun provideProductService(retrofitX: RetrofitX): ProductService {
-        return retrofitX.productService
+    fun provideProductService(retrofit: Retrofit): ProductService {
+        return retrofit.create(ProductService::class.java)
     }
 }

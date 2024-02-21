@@ -61,6 +61,44 @@ catch (e: IOException) {
     DataResponse.ConnectionError(e)
 }
 
+fun <T, E> executeRetrofitFunction(
+    retrofitFunction: () -> T,
+    errorAdapter: JsonAdapter<E>,
+    tClass: Class<T>,
+    eClass: Class<E>
+): DataResponse<T, E> = try {
+    DataResponse.Success(retrofitFunction())
+}
+catch (e: HttpException) {
+    val response = e.response()!!
+    val code = response.code()
+    try {
+        val error = errorAdapter.fromJson(response.errorBody()!!.string())!!
+        DataResponse.ApiError(error, code)
+    } catch (e: JsonEncodingException) {
+        throw ParseFailureException(isApiErrorParsingFailure = true)
+    } catch (e: JsonDataException) {
+        throw ParseFailureException(isApiErrorParsingFailure = true)
+    } catch (e: EOFException) {
+        throw ParseFailureException(isApiErrorParsingFailure = true)
+    }
+}
+catch (e: JsonEncodingException) {
+    throw ParseFailureException(isApiErrorParsingFailure = false)
+}
+catch (e: JsonDataException) {
+    throw ParseFailureException(isApiErrorParsingFailure = false)
+}
+catch (e: IllegalArgumentException) {
+    throw ParseFailureException(isApiErrorParsingFailure = false)
+}
+catch (e: EOFException) {
+    throw ParseFailureException(isApiErrorParsingFailure = false)
+}
+catch (e: IOException) {
+    DataResponse.ConnectionError(e)
+}
+
 suspend fun <E> invokeUnitFunction(
     retrofitFunction: suspend () -> Unit,
     errorAdapter: JsonAdapter<E>
